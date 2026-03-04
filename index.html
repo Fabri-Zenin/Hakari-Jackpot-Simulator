@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" 
+content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+
+margin: 0;
+
+height: 100vh;
+
+display: flex;
+
+justify-content: center;
+
+align-items: center;
+
+flex-direction: column;
+
+background-color: black;
+
+box-shadow: inset 0 0 50px red;
+
+}
+
+h1, h2, p {
+
+color: red;
+
+}
+
+button {
+
+background-color: black;
+
+color: red;
+
+border: 2px solid red;
+
+padding: 8px 12px;
+
+cursor: pointer;
+
+}
+
+button:hover {
+
+background-color: red;
+
+color: black;
+
+transition: 0.3s;
+
+}
+
+input {
+
+background-color: black;
+
+color: red;
+
+border: 2px solid red;
+
+padding: 6px;
+
+}
+
+progress {
+
+width: 200px;
+
+}
+
+.tema-verde {
+
+background-color: white;
+box-shadow: inset 0 0 50px lime;
+
+}
+
+.tema-verde h1,
+
+.tema-verde h2,
+
+.tema-verde p {
+background-color: white;
+color: lime;
+
+}
+
+.tema-verde button {
+
+border: 2px solid lime;
+
+color: lime;
+
+}
+
+.tema-verde button:hover {
+
+background-color: lime;
+
+color: white;
+
+transition: 0.3s;
+
+}
+  
+.tema-verde input {
+
+border: 2px solid lime;
+
+color: lime;
+
+}
+
+@keyframes tremer {
+
+0% { transform: translate(0, 0); }
+
+25% { transform: translate(5px, -5px); }
+
+50% { transform: translate(-5px, 5px); }
+
+75% { transform: translate(5px, 5px); }
+
+100% { transform: translate(0, 0); }
+
+}
+
+.treme {
+
+animation: tremer 0.3s linear 3;
+
+}
+
+#slot {
+    font-size: 50px;
+    letter-spacing: 15px;
+    border: 3px solid red;
+    padding: 15px 25px;
+    margin: 20px;
+}
+
+.tema-verde #slot {
+    border: 3px solid lime;
+}
+#botaoGirar {
+    width: 300px; /* Largura aproximada da imagem do Hakari */
+    height: 170px; /* Altura aproximada */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 0;
+    margin: 20px auto;
+}
+
+#botaoGirar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem preencher o botão sem distorcer */
+}
+@media (max-width: 600px) {
+  #slot {
+    font-size: 35px;
+    letter-spacing: 8px;
+  }
+
+  button {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  #loja {
+    width: 180px;
+  }
+}
+#abrirLoja {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+#loja {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  background: black;
+  border: 2px solid red;
+  padding: 15px;
+  width: 220px;
+}
+#contadorJackpot {
+  position: fixed;
+  top: 3px;
+  left: 25px;
+  background: black;
+  border: 2px solid red;
+  padding: 2px;
+  color: red;
+  font-weight: bold;
+}
+.tema-verde #contadorJackpot {
+  border: 2px solid lime;
+  color: lime;
+}
+#admC {
+  position: fixed;
+  top: 3px;
+  left: 3px;
+  background: black;
+  border: 2px solid red;
+  padding: 2px;
+  color: red;
+  font-weight: bold
+}
+#painelAdmin {
+  position: fixed;
+  top: 70px;
+  left: 90px;
+  background: black;
+  border: 2px solid red;
+  padding: 8px;
+  box-shadow: 0 0 15px red;
+
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1000;
+}
+
+#painelAdmin button,
+#painelAdmin input {
+  width: 100%;
+  box-sizing: border-box;
+}
+#painelAdmin button {
+  padding: 4px 6px;
+  font-size: 12px;
+}
+#painelAdmin h3 {
+  margin: 4px 0;
+  font-size: 14px;
+}
+.tema-verde #painelAdmin {
+  border: 2px solid lime;
+  box-shadow: 0 0 15px lime;
+}
+#contadorTempo {
+  position: fixed;
+  top: 10px;
+  left: 160px;
+  background: black;
+  border: 2px solid red;
+  padding: 1px;
+  color: red;
+  font-weight: bold;
+}
+.tema-verde #contadorTempo {
+  border: 2px solid lime;
+  color: lime;
+}
+</style>
+<title>Jackpot Test</title>
+</head>
+
+<body>
+<button id="abrirLoja" onclick="toggleLoja()">🛒</button>
+
+<div id="loja" style="display:none;">
+  <h2>LOJA</h2>
+  <p>Seus Pontos: <span id="pontosLoja">0</span></p>
+
+  <button onclick="comprarBuff('clique2x')">
+    +1 ponto por clique (2 Jackpots) - 50 pts
+  </button>
+
+  <button onclick="comprarBuff('chance')">
+    +20% chance de 777 (2 giros) - 80 pts
+  </button>
+    
+    <button onclick="comprarBuff('duracao')">
+  +5s de Jackpot (próximo) - 100 pts
+</button>
+
+<button onclick="comprarBuff('auto777')">
+  777 garantido no próximo giro - 120 pts
+</button>
+</div>
+<button id="admC" onclick="toggleAdmin()">⚙</button>
+
+<div id="painelAdmin" style="display:none;">
+  <div id="loginAdmin">
+    <input type="password" id="codigoAdmin" placeholder="Código">
+    <button onclick="verificarAdmin()">Entrar</button>
+  </div>
+
+  <div id="areaAdmin" style="display:none;">
+    <h3>ADMIN</h3>
+    <button onclick="darPontosAdmin()">+999999 Pontos</button>
+    <button onclick="ativarJackpotAdmin()">Forçar Jackpot</button>
+    <button onclick="chanceMaxAdmin()">Chance 100%</button>
+  </div>
+</div>
+<div id="contadorJackpot">
+  🔥 Sequência: <span id="sequenciaAtual">0</span><br>
+  🏆 Recorde: <span id="recordeSequencia">0</span>
+</div>
+<h1>
+<h2>Clique para Iniciar ⬇⬇⬇</h2>
+  <button onclick="girar()"><img src="hakari.gif" alt=""></button></h1>
+<p id="pontuacao">Pontos: 0</p>
+<button id="botaoClick" onclick="ganharPonto()">CLIQUE RÁPIDO</button>
+<h2><div id="slot">
+  <span id="n1">0</span>
+  <span id="n2">0</span>
+  <span id="n3">0</span>
+</div>
+<div id="contadorTempo">
+  Tempo: <span id="tempo">30</span>
+</div>
+
+<audio id="musica" src="suaMusica.mp3"></audio>
+<script>
+let multiplicadorClique = 1;
+let jackpotsRestantesBuff = 0;
+
+let chanceExtra = 0;
+let girosRestantesBuff = 0;
+    
+    let duracaoExtraJackpot = 0;
+let girosAuto777 = 0;
+    
+  let girando = false;
+let intervaloSlot = null;
+    
+   let jackpotAtivo = false;
+let tempoJackpot = null;
+    
+    let sequenciaAtual = 0;
+let recordeSequencia = 0;
+    
+let adminAtivo = false;
+const codigoSecreto = "06032011Ml";
+    
+let tempoRestante = 30;
+let intervaloTempo = null;
+let modoSobrevivencia = true;
+
+function girar() {
+    if (intervaloTempo === null && modoSobrevivencia) {
+        iniciarModoSobrevivencia();
+    }
+
+    if (girando || jackpotAtivo) return;
+    girando = true;
+
+    intervaloSlot = setInterval(() => {
+        document.getElementById("n1").textContent = Math.floor(Math.random()*10);
+        document.getElementById("n2").textContent = Math.floor(Math.random()*10);
+        document.getElementById("n3").textContent = Math.floor(Math.random()*10);
+    }, 100);
+
+    setTimeout(pararSlot, 2000);
+}
+function pararSlot() {
+    clearInterval(intervaloSlot);
+
+    let ganhou = false;
+
+    // Se tiver auto 777 ativo
+    if (girosAuto777 > 0) {
+        ganhou = true;
+        girosAuto777--;
+    } else {
+        let chanceBase = 0.5;
+        ganhou = Math.random() < (chanceBase + chanceExtra);
+
+        if (girosRestantesBuff > 0) {
+            girosRestantesBuff--;
+            if (girosRestantesBuff === 0) chanceExtra = 0;
+        }
+    }
+
+    if (ganhou) {
+    document.getElementById("n1").textContent = "7";
+    document.getElementById("n2").textContent = "7";
+    document.getElementById("n3").textContent = "7";
+      
+    iniciarJackpot();   
+} else {
+    sequenciaAtual = 0;
+    document.getElementById("sequenciaAtual").textContent = 0;
+}
+
+    girando = false;
+      
+}
+
+function iniciarJackpot() {
+
+    jackpotAtivo = true;
+
+    document.body.classList.add("tema-verde");
+    document.body.classList.add("treme");
+
+    document.getElementById("musica").play();
+    
+    sequenciaAtual++;
+
+if (sequenciaAtual > recordeSequencia) {
+    recordeSequencia = sequenciaAtual;
+}
+
+document.getElementById("sequenciaAtual").textContent = sequenciaAtual;
+document.getElementById("recordeSequencia").textContent = recordeSequencia;
+
+if (modoSobrevivencia) {
+  tempoRestante += 14;
+}
+
+    setTimeout(() => {
+        document.body.classList.remove("treme");
+    }, 900);
+
+    let duracaoTotal = 10000 + duracaoExtraJackpot;
+duracaoExtraJackpot = 0;
+
+tempoJackpot = setTimeout(encerrarJackpot, duracaoTotal);
+}
+
+function encerrarJackpot() {
+
+    jackpotAtivo = false;
+  
+  
+    document.body.classList.remove("tema-verde");
+    document.getElementById("musica").pause();
+    document.getElementById("musica").currentTime = 0;
+    
+    if (jackpotsRestantesBuff > 0) {
+    jackpotsRestantesBuff--;
+    if (jackpotsRestantesBuff === 0) {
+        multiplicadorClique = 1;
+    }
+}
+}
+  
+let pontos = 0;
+
+function ganharPonto() {
+    if (!jackpotAtivo) return;
+
+    pontos += multiplicadorClique;
+    document.getElementById("pontuacao").textContent = "Pontos: " + pontos;
+}
+
+    function toggleLoja() {
+    const loja = document.getElementById("loja");
+    loja.style.display = loja.style.display === "none" ? "block" : "none";
+    document.getElementById("pontosLoja").textContent = pontos;
+}
+
+    function comprarBuff(tipo) {
+
+    if (tipo === "clique2x" && pontos >= 50) {
+        pontos -= 50;
+        multiplicadorClique = 2;
+        jackpotsRestantesBuff = 2;
+    }
+
+    if (tipo === "chance" && pontos >= 80) {
+        pontos -= 80;
+        chanceExtra = 0.2;
+        girosRestantesBuff = 2;
+    }
+        
+    if (tipo === "duracao" && pontos >= 100) {
+    pontos -= 100;
+    duracaoExtraJackpot = 5000; // +5 segundos
+}
+
+if (tipo === "auto777" && pontos >= 120) {
+    pontos -= 120;
+    girosAuto777 = 1;
+}
+
+    document.getElementById("pontuacao").textContent = "Pontos: " + pontos;
+    document.getElementById("pontosLoja").textContent = pontos;
+}
+function toggleAdmin() {
+  const painel = document.getElementById("painelAdmin");
+  painel.style.display = painel.style.display === "none" ? "block" : "none";
+}
+
+function verificarAdmin() {
+  const codigoDigitado = document.getElementById("codigoAdmin").value;
+
+  if (codigoDigitado === codigoSecreto) {
+    adminAtivo = true;
+
+    document.getElementById("loginAdmin").style.display = "none";
+    document.getElementById("areaAdmin").style.display = "block";
+  } else {
+    alert("Código incorreto");
+  }
+
+  document.getElementById("codigoAdmin").value = "";
+}
+function ativarJackpotAdmin() {
+  if (!adminAtivo) return;
+  iniciarJackpot();
+}
+
+function chanceMaxAdmin() {
+  if (!adminAtivo) return;
+  chanceExtra = 1; // 100%
+  girosRestantesBuff = 999;
+}
+function darPontosAdmin() {
+  if (!adminAtivo) return;
+
+  pontos += 999999;
+  document.getElementById("pontuacao").textContent = "Pontos: " + pontos;
+}
+function iniciarModoSobrevivencia() {
+  intervaloTempo = setInterval(() => {
+    tempoRestante--;
+    document.getElementById("tempo").textContent = tempoRestante;
+
+    if (tempoRestante <= 0) {
+      clearInterval(intervaloTempo);
+      clearInterval(intervaloTempo);
+jackpotAtivo = false;
+
+document.body.innerHTML = `
+  <h1 style="color:red;">💀 GAME OVER</h1>
+  <h2>Recorde: ${recordeSequencia}</h2>
+  <h2>Pontos: ${pontos}</h2>
+  <button onclick="location.reload()">Jogar Novamente</button>
+`;
+    }
+  }, 1000);
+}
+
+</script>
+
+</body>
+</html>
